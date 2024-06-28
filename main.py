@@ -246,7 +246,6 @@ with tab_carto:
     with indic0:
         with st.container(border=True, height=130):
             st.caption(":boom: Nombre d'accidents")
-            st.write("")
             st.subheader(nb_accidents_filter)
     with indic1:
         with st.container(border=True, height=130):
@@ -259,12 +258,10 @@ with tab_carto:
     with indic3:
         with st.container(border=True, height=130):
             st.caption(":skull_and_crossbones: Nombre de décès")
-            st.write("")
             st.subheader(nb_deces_filter)
     with indic4:
         with st.container(border=True, height=130):
             st.caption(":100: Taux de létalité.")
-            st.write("")
             st.subheader("{:0.2%}".format(taux_letalite_filter))
 
     st.map(df_carac_lieuxFilter, latitude="latitude", longitude="longitude")

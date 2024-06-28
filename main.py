@@ -43,67 +43,95 @@ with tab_generalites:
             st.header("{:0.2%}".format(taux_letalite))
 
 
-    ## Graphique nb accidents par mois
-    line_chart = alt.Chart(df_acc_par_mois.sort_values("mois", ascending=True)).mark_bar().encode(
-        x=alt.X('label_mois', sort=None).title('Mois de survenance'),
-        y=alt.Y('count').title('Nombre d\'accidents'),
-    )
-    st.altair_chart(line_chart, use_container_width=True)
+    col_graphiques_1, col_graphiques_2, col_graphiques_3=st.columns(3)
 
-    ## Graphique nb accidents par jour
-    st.line_chart(df_acc_par_jour, x='date', y='Accident_Id', x_label='Date', y_label='Nb d\'accidents')
+    with col_graphiques_1:
+        with st.container(border=True):
+            st.subheader("Nombre d'accidents par mois")    
+            ## Graphique nb accidents par mois
+            line_chart = alt.Chart(df_acc_par_mois.sort_values("mois", ascending=True)).mark_bar().encode(
+                x=alt.X('label_mois', sort=None).title('Mois de survenance'),
+                y=alt.Y('count').title('Nombre d\'accidents'),
+            )
+            st.altair_chart(line_chart, use_container_width=True)
 
-    ## Graphique répartition par gravité
-    labels = f'{df_usagers_par_gravite.iloc[0,0]} ({df_usagers_par_gravite.iloc[0,1]})', \
-        f'{df_usagers_par_gravite.iloc[1,0]} ({df_usagers_par_gravite.iloc[1,1]}), ', \
-        f'{df_usagers_par_gravite.iloc[2,0]} ({df_usagers_par_gravite.iloc[2,1]}), ', \
-        f'{df_usagers_par_gravite.iloc[3,0]} ({df_usagers_par_gravite.iloc[3,1]}), '
-    valeurs = [ df_usagers_par_gravite.iloc[0,1], \
-                df_usagers_par_gravite.iloc[1,1], \
-                df_usagers_par_gravite.iloc[2,1], \
-                df_usagers_par_gravite.iloc[3,1]]
+    with col_graphiques_2:
+        with st.container(border=True):
+            st.subheader("Nombre d'accidents par jour")
 
-    fig1, ax1 = plt.subplots()
-    ax1.pie(valeurs, labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=90)
-    ax1.axis('equal')
-    st.pyplot(fig1)
+            ## Graphique nb accidents par jour
+            st.line_chart(df_acc_par_jour, x='date', y='Accident_Id', x_label='Date', y_label='Nb d\'accidents')
+
+    
+    with col_graphiques_3:
+
+        ## Graphique répartition par sexe
+        with st.container(border=True):
+            st.subheader("Répartition par sexe")
+            labels = f'Hommes ({nb_acc_hommes})', f'Femmes ({nb_acc_femmes})'
+            valeurs = [nb_acc_hommes, nb_acc_femmes]
+            explode = (0, 0.1, 0, 0)
+
+            fig1, ax1 = plt.subplots()
+            ax1.pie(valeurs, labels=labels, autopct='%1.1f%%',
+                    shadow=True, startangle=90)
+            ax1.axis('equal')
+            st.pyplot(fig1)
+
+    col_1_3, col_2_3 = st.columns([3, 7])
+    with col_1_3:
+        ## Graphique de répartition des obstacles mobiles heurtés
+        with st.container(border=True):
+            st.subheader("Répartition des obstacles mobiles heurtés")
+            line_chart = alt.Chart(df_obstacles_heurtes_par_type.sort_values("Num_Acc", ascending=False)).mark_bar().encode(
+                x=alt.X('obsm', sort=None).title('Type d\'obstacle mobile'),
+                y=alt.Y('Num_Acc').title('Nombre d\'accidents'),
+            )
+            st.altair_chart(line_chart, use_container_width=True)
+
+        ## Graphique répartition par gravité
+        with st.container(border=True):
+            st.subheader("Répartition par gravité")
+            labels = f'{df_usagers_par_gravite.iloc[0,0]} ({df_usagers_par_gravite.iloc[0,1]})', \
+                f'{df_usagers_par_gravite.iloc[1,0]} ({df_usagers_par_gravite.iloc[1,1]}), ', \
+                f'{df_usagers_par_gravite.iloc[2,0]} ({df_usagers_par_gravite.iloc[2,1]}), ', \
+                f'{df_usagers_par_gravite.iloc[3,0]} ({df_usagers_par_gravite.iloc[3,1]}), '
+            valeurs = [ df_usagers_par_gravite.iloc[0,1], \
+                        df_usagers_par_gravite.iloc[1,1], \
+                        df_usagers_par_gravite.iloc[2,1], \
+                        df_usagers_par_gravite.iloc[3,1]]
+            fig1, ax1 = plt.subplots()
+            ax1.pie(valeurs, labels=labels, autopct='%1.1f%%',
+                    shadow=True, startangle=90)
+            ax1.axis('equal')
+            st.pyplot(fig1)
+
+        ## Graphique répartition par type de trajet
+        with st.container(border=True):
+            st.subheader("Répartition par type de trajet")
+            st.bar_chart(df_acc_par_type_trajet, x='trajet', y='Num_Acc', x_label="Type de trajet", y_label="Nombre d'accidents")
 
 
-    ## Graphique répartition par type de véhicule
-    line_chart = alt.Chart(df_acc_par_type_vehicule.sort_values("Num_Acc", ascending=False)).mark_bar().encode(
-        x=alt.X('Num_Acc').title('Nombre d\'accidents'),
-        y=alt.Y('catv', sort=None).title('Type de véhicule'),
-    )
-    st.altair_chart(line_chart, use_container_width=True)
+    with col_2_3:
+        ## Graphique répartition par type de véhicule
+        with st.container(border=True):
+            st.subheader("Répartition par type de véhicule")
+            line_chart = alt.Chart(df_acc_par_type_vehicule.sort_values("Num_Acc", ascending=False)).mark_bar().encode(
+                x=alt.X('Num_Acc').title('Nombre d\'accidents'),
+                y=alt.Y('catv', sort=None).title('Type de véhicule'),
+            )
+            st.altair_chart(line_chart, use_container_width=True)
 
-    ## Graphique répartition par type de trajet
-    st.bar_chart(df_acc_par_type_trajet, x='trajet', y='Num_Acc', x_label="Type de trajet", y_label="Nombre d'accidents")
 
-    ## Graphique répartition par sexe
-    labels = f'Hommes ({nb_acc_hommes})', f'Femmes ({nb_acc_femmes})'
-    valeurs = [nb_acc_hommes, nb_acc_femmes]
-    explode = (0, 0.1, 0, 0)
 
-    fig1, ax1 = plt.subplots()
-    ax1.pie(valeurs, labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=90)
-    ax1.axis('equal')
-    st.pyplot(fig1)
-
-    ## Graphique nb accidents par conditions atmosphériques
-    line_chart = alt.Chart(df_acc_par_meteo.sort_values("Accident_Id", ascending=False)).mark_bar().encode(
-        y=alt.Y('atm', sort=None).title('Conditions atomsphériques'),
-        x=alt.X('Accident_Id', sort=None).title('Nombre d\'accidents'),
-    )
-    st.altair_chart(line_chart, use_container_width=True)
-
-    ## Graphique de répartition des obstacles mobiles heurtés
-    line_chart = alt.Chart(df_obstacles_heurtes_par_type.sort_values("Num_Acc", ascending=False)).mark_bar().encode(
-        x=alt.X('obsm', sort=None).title('Type d\'obstacle mobile'),
-        y=alt.Y('Num_Acc').title('Nombre d\'accidents'),
-    )
-    st.altair_chart(line_chart, use_container_width=True)
+        ## Graphique nb accidents par conditions atmosphériques
+        with st.container(border=True):
+            st.subheader("Répartition par conditions atomsphériques")
+            line_chart = alt.Chart(df_acc_par_meteo.sort_values("Accident_Id", ascending=False)).mark_bar().encode(
+                y=alt.Y('atm', sort=None).title('Conditions atomsphériques'),
+                x=alt.X('Accident_Id', sort=None).title('Nombre d\'accidents'),
+            )
+            st.altair_chart(line_chart, use_container_width=True)
 
 with tab_carto:
 

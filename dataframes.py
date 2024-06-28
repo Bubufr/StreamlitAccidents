@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from constantes import *
-import streamlit as st
 
 # Chargement des fichiers de données
 lieux = pd.read_csv('data/lieux.csv', sep=";", low_memory=False)

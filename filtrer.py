@@ -1,4 +1,4 @@
-def AppliquerFiltres(_df,
+def appliquerFiltres(_df,
 _stDep = None
 ,_stAtm = None
 ,_stLum = None

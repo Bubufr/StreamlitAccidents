@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import altair as alt
 import subprocess
 from dataframes import *
-    
+from filtrer import *
 # Lancement du chargement des dataframes
 subprocess.run(["python", "dataframes.py"])
 
@@ -99,6 +99,87 @@ line_chart = alt.Chart(df_obstacles_heurtes_par_type.sort_values("Num_Acc", asce
 )
 st.altair_chart(line_chart, use_container_width=True)
 
+#Listes pour filtres
+listeDep = df_carac_lieux['dep'].unique()
+#Les conditions atmosphériques.
+listeAtm = df_carac_lieux['atm'].unique()
+#Les conditions d'éclairage.
+listeLum = df_carac_lieux['lum'].unique()
+#La localisation (en ou hors agglomération).
+listeAgg = df_carac_lieux['agg'].unique()
+#La catégorie de route.
+listeCatr = df_carac_lieux['catr'].unique()
+#Le type de collision.
+listeCol = df_carac_lieux['col'].unique()
 
+with st.sidebar:
+    stFilter = st.toggle("Filtrer")
+#Filtres streamlit
+    stDep = st.selectbox(
+    "Département",sorted(listeDep), index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoDep.get(x)
+    )
+#Les conditions atmosphériques.
+    stAtm = st.selectbox(
+    "Conditions atmosphériques",sorted(listeAtm), index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoAtm.get(x)
+    )
+#Les conditions d'éclairage.
+    stLum = st.selectbox(
+    "Conditions d'éclairage",sorted(listeLum), index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoLum.get(x)
+    )
+#La localisation (en ou hors agglomération).
+    stAgg = st.selectbox(
+    "Localisation",sorted(listeAgg), index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoAgg.get(x)
+    )
+#La catégorie de route.
+    stCatr = st.selectbox(
+    "Catégorie de route",sorted(listeCatr),index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoCatr.get(x)
+    )
+#Le type de collision.
+    stCol = st.selectbox(
+    "Type de collision", sorted(listeCol), index = None, placeholder = "Tous"
+    ,format_func=lambda x: dicoCol.get(x)
+    )
 
+if stFilter:
+    df_carac_lieuxFilter = appliquerFiltres(df_carac_lieux,stDep,stAtm,stLum,stAgg,stCatr,stCol)
+    df_carac_vehiculesFilter = appliquerFiltres(df_carac_vehicules,stDep,stAtm,stLum,stAgg,stCatr,stCol)
+    df_carac_usagersFilter = appliquerFiltres(df_carac_usagers,stDep,stAtm,stLum,stAgg,stCatr,stCol)
+    nb_accidents_filter = len(df_carac_lieuxFilter)
+    nb_vehicules_filter = len(df_carac_vehiculesFilter)
+    nb_usagers_filter = len(df_carac_usagersFilter)
+    nb_deces_filter = len(df_carac_usagersFilter[(df_carac_usagersFilter['grav'] == 2)])
+    taux_letalite_filter = nb_deces_filter / nb_accidents_filter
+else:
+    df_carac_lieuxFilter = df_carac_lieux.copy()
+    df_carac_vehiculesFilter = df_carac_vehicules.copy()
+    df_carac_usagersFilter = df_carac_usagers.copy()
+    nb_accidents_filter = nb_accidents
+    nb_vehicules_filter = nb_vehicules
+    nb_usagers_filter = nb_usagers
+    nb_deces_filter = nb_deces
+    taux_letalite_filter = taux_letalite
 
+indic0, indic1, indic2, indic3, indic4 = st.columns(5)
+with indic0:
+    st.caption(':boom: Nombre d\'accidents')
+    st.subheader(nb_accidents_filter)
+with indic1:
+    st.caption(':racing_car: Nombre de véhicules impliqués')
+    st.subheader(nb_vehicules_filter)
+with indic2:
+    st.caption(':walking: Nombre d\'usagers impliqués')
+    st.subheader(nb_usagers_filter)
+with indic3:
+    st.caption(':skull_and_crossbones: Nombre de décès')
+    st.write('')
+    st.subheader(nb_deces_filter)
+with indic4:
+    st.caption(':100: Taux de létalité.')
+    st.write('')
+    st.subheader("{:0.2%}".format(taux_letalite_filter))
+st.map(df_carac_lieuxFilter,latitude = 'latitude', longitude = 'longitude')

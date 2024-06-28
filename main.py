@@ -109,9 +109,9 @@ with tab_generalites:
             st.subheader("Répartition par gravité")
             labels = (
                 f"{df_usagers_par_gravite.iloc[0,0]} ({df_usagers_par_gravite.iloc[0,1]})",
-                f"{df_usagers_par_gravite.iloc[1,0]} ({df_usagers_par_gravite.iloc[1,1]}), ",
-                f"{df_usagers_par_gravite.iloc[2,0]} ({df_usagers_par_gravite.iloc[2,1]}), ",
-                f"{df_usagers_par_gravite.iloc[3,0]} ({df_usagers_par_gravite.iloc[3,1]}), ",
+                f"{df_usagers_par_gravite.iloc[1,0]} ({df_usagers_par_gravite.iloc[1,1]})",
+                f"{df_usagers_par_gravite.iloc[2,0]} ({df_usagers_par_gravite.iloc[2,1]})",
+                f"{df_usagers_par_gravite.iloc[3,0]} ({df_usagers_par_gravite.iloc[3,1]})",
             )
             valeurs = [
                 df_usagers_par_gravite.iloc[0, 1],
@@ -155,12 +155,12 @@ with tab_generalites:
 
         ## Graphique nb accidents par conditions atmosphériques
         with st.container(border=True):
-            st.subheader("Répartition par conditions atomsphériques")
+            st.subheader("Répartition par conditions atmosphériques")
             line_chart = (
                 alt.Chart(df_acc_par_meteo.sort_values("Accident_Id", ascending=False))
                 .mark_bar()
                 .encode(
-                    y=alt.Y("atm", sort=None).title("Conditions atomsphériques"),
+                    y=alt.Y("atm", sort=None).title("Conditions atmosphériques"),
                     x=alt.X("Accident_Id", sort=None).title("Nombre d'accidents"),
                 )
             )

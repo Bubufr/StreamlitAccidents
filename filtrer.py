@@ -18,7 +18,3 @@ _stDep = None
     if _stCol != None:
         _df = _df.loc[(_df['col'] == _stCol)]
     return _df
-
-
-
-

@@ -72,3 +72,16 @@ nb_vehicules = len(df_carac_vehicules)
 nb_usagers = len(df_carac_usagers)
 nb_deces = len(df_carac_usagers[(df_carac_usagers['grav'] == 2)])
 taux_letalite = nb_deces / nb_accidents
+
+ #Département
+listeDep = df_carac_lieux['dep'].unique()
+#Les conditions d'éclairage.
+listeLum = df_carac_lieux['lum'].unique()
+#La localisation (en ou hors agglomération).
+listeAgg = df_carac_lieux['agg'].unique()
+#La catégorie de route.
+listeCatr = df_carac_lieux['catr'].unique()
+#Le type de collision.
+listeCol = df_carac_lieux['col'].unique()
+#Les conditions atmosphériques.
+listeAtm = df_carac_lieux['atm'].unique()

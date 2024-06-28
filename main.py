@@ -107,67 +107,43 @@ with tab_generalites:
 
 with tab_carto:
 
-    col_critere_1, col_critere_2 = st.columns(2)
-
-    #Département
-    listeDep = df_carac_lieux['dep'].unique()
-    #Les conditions d'éclairage.
-    listeLum = df_carac_lieux['lum'].unique()
-    #La localisation (en ou hors agglomération).
-    listeAgg = df_carac_lieux['agg'].unique()
-    #La catégorie de route.
-    listeCatr = df_carac_lieux['catr'].unique()
-    #Le type de collision.
-    listeCol = df_carac_lieux['col'].unique()
-    #Les conditions atmosphériques.
-    listeAtm = df_carac_lieux['atm'].unique()
-
+    col_critere_1, col_critere_2, col_critere3 = st.columns(3)
     #Filtres streamlit
     with col_critere_1:
+
         stDep = st.selectbox(
         "Département",sorted(listeDep), index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoDep.get(x)
         )
-        
         #Les conditions atmosphériques.
         stAtm = st.selectbox(
         "Conditions atmosphériques",sorted(listeAtm), index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoAtm.get(x)
         )
-        
+
+    with col_critere_2:    
         #Les conditions d'éclairage.
         stLum = st.selectbox(
         "Conditions d'éclairage",sorted(listeLum), index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoLum.get(x)
         )
-    
-    with col_critere_2:
         #La localisation (en ou hors agglomération).
         stAgg = st.selectbox(
         "Localisation",sorted(listeAgg), index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoAgg.get(x)
         )
-        
+
+    with col_critere3:
         #La catégorie de route.
         stCatr = st.selectbox(
         "Catégorie de route",sorted(listeCatr),index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoCatr.get(x)
         )
-
         #Le type de collision.
         stCol = st.selectbox(
         "Type de collision", sorted(listeCol), index = None, placeholder = "Tous"
         ,format_func=lambda x: dicoCol.get(x)
         )
-
-    df_carac_lieuxFilter = df_carac_lieux.copy()
-    df_carac_vehiculesFilter = df_carac_vehicules.copy()
-    df_carac_usagersFilter = df_carac_usagers.copy()
-    nb_accidents_filter = nb_accidents
-    nb_vehicules_filter = nb_vehicules
-    nb_usagers_filter = nb_usagers
-    nb_deces_filter = nb_deces
-    taux_letalite_filter = taux_letalite
 
     df_carac_lieuxFilter = appliquerFiltres(df_carac_lieux,stDep,stAtm,stLum,stAgg,stCatr,stCol)
     df_carac_vehiculesFilter = appliquerFiltres(df_carac_vehicules,stDep,stAtm,stLum,stAgg,stCatr,stCol)
@@ -178,27 +154,30 @@ with tab_carto:
     nb_deces_filter = len(df_carac_usagersFilter[(df_carac_usagersFilter['grav'] == 2)])
     taux_letalite_filter = nb_deces_filter / nb_accidents_filter
 
-
     indic0, indic1, indic2, indic3, indic4 = st.columns(5)
     with indic0:
-        st.caption(':boom: Nombre d\'accidents')
-        st.subheader(nb_accidents_filter)
+        with st.container(border=True, height=130):
+            st.caption(':boom: Nombre d\'accidents')
+            st.write('')
+            st.subheader(nb_accidents_filter)
     with indic1:
-        st.caption(':racing_car: Nombre de véhicules impliqués')
-        st.subheader(nb_vehicules_filter)
+        with st.container(border=True, height=130):
+            st.caption(':racing_car: Nombre de véhicules impliqués')
+            st.subheader(nb_vehicules_filter)
     with indic2:
-        st.caption(':walking: Nombre d\'usagers impliqués')
-        st.subheader(nb_usagers_filter)
+        with st.container(border=True, height=130):
+            st.caption(':walking: Nombre d\'usagers impliqués')
+            st.subheader(nb_usagers_filter)
     with indic3:
-        st.caption(':skull_and_crossbones: Nombre de décès')
-        st.write('')
-        st.subheader(nb_deces_filter)
+        with st.container(border=True, height=130):
+            st.caption(':skull_and_crossbones: Nombre de décès')
+            st.write('')
+            st.subheader(nb_deces_filter)
     with indic4:
-        st.caption(':100: Taux de létalité.')
-        st.write('')
-        st.subheader("{:0.2%}".format(taux_letalite_filter))
-
-    col_filtres, col_carto = st.columns([0.3, 0.7])
+        with st.container(border=True, height=130):
+            st.caption(':100: Taux de létalité.')
+            st.write('')
+            st.subheader("{:0.2%}".format(taux_letalite_filter))
 
     st.map(df_carac_lieuxFilter,latitude = 'latitude', longitude = 'longitude')
 

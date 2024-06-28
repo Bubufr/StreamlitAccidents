@@ -89,7 +89,7 @@ with tab_generalites:
     with col_1_3:
         ## Graphique de répartition des obstacles mobiles heurtés
         with st.container(border=True):
-            st.subheader("Répartition des obstacles mobiles heurtés")
+            st.subheader("Répartition par obstacle mobile heurté")
             line_chart = (
                 alt.Chart(
                     df_obstacles_heurtes_par_type.sort_values(
@@ -98,7 +98,7 @@ with tab_generalites:
                 )
                 .mark_bar()
                 .encode(
-                    x=alt.X("obsm", sort=None).title("Type d'obstacle mobile"),
+                    x=alt.X("obsm", sort=None).title("Type d'obstacle"),
                     y=alt.Y("Num_Acc").title("Nombre d'accidents"),
                 )
             )
